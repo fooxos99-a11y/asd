@@ -34,30 +34,10 @@ function GuessImageGamePlayClient() {
   const [loading, setLoading] = useState(true)
 
   // Fetch images from database
-  import { Suspense } from "react"
-    }
-  function GuessImageGamePlayClient() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const team1Name = searchParams.get("team1") || "الفريق الأول"
-    const team2Name = searchParams.get("team2") || "الفريق الثاني"
-
-    const [team1Score, setTeam1Score] = useState(0)
-    const [team2Score, setTeam2Score] = useState(0)
-    const [currentTurn, setCurrentTurn] = useState<"team1" | "team2">("team1")
-    const [images, setImages] = useState<GuessImage[]>([])
-    const [currentImageIndex, setCurrentImageIndex] = useState(0)
-    const [revealedCells, setRevealedCells] = useState<Set<number>>(new Set())
-    const [answerDialogOpen, setAnswerDialogOpen] = useState(false)
-    const [roundWinner, setRoundWinner] = useState<string | null>(null)
-    const [gameWinner, setGameWinner] = useState<string | null>(null)
-    const [loading, setLoading] = useState(true)
-
-    // Fetch images from database
-    useEffect(() => {
-      const fetchImages = async () => {
-        try {
-          const response = await fetch("/api/guess-images")
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await fetch("/api/guess-images")
           if (response.ok) {
             const data = await response.json()
             const activeImages = data.filter((img: GuessImage) => img.difficulty)
