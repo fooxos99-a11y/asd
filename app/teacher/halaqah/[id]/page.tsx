@@ -1,9 +1,21 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+// دالة لتحويل التقييم من الإنجليزي إلى العربي
+const evaluationLevelToArabic = (level: EvaluationLevel) => {
+  switch (level) {
+    case "excellent":
+      return "ممتاز";
+    case "very_good":
+      return "جيد جداً";
+    case "good":
+      return "جيد";
+    case "not_completed":
+      return "لم يكمل";
+    default:
+      return "-";
+  }
+};
+// ...existing code...
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, RotateCcw } from "lucide-react"
