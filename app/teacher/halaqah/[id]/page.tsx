@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 // دالة لتحويل التقييم من الإنجليزي إلى العربي
 const evaluationLevelToArabic = (level: EvaluationLevel) => {
   switch (level) {
