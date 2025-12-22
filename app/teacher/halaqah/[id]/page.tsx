@@ -408,9 +408,13 @@ export default function HalaqahManagement() {
                               مستأذن
                             </Button>
                           </div>
-                          {student.attendance === 'present' && (
-                            <div className="space-y-2 pt-2">
-                              <p className="text-xs sm:text-sm font-semibold text-[#1a2332] text-center">تقييم الكل:</p>
+                        </div>
+
+                        {/* تقييم الكل + خيارات التقييم في صف واحد */}
+                        {student.attendance === 'present' && (
+                          <div className="grid grid-cols-5 gap-2 w-full items-start lg:col-span-3">
+                            <div className="flex flex-col items-center">
+                              <p className="text-xs sm:text-sm font-semibold text-[#1a2332] text-center mb-2">تقييم الكل:</p>
                               <div className="grid grid-cols-2 gap-1 sm:gap-2">
                                 <Button
                                   onClick={() => setAllEvaluations(student.id, 'excellent')}
@@ -438,12 +442,6 @@ export default function HalaqahManagement() {
                                 </Button>
                               </div>
                             </div>
-                          )}
-                        </div>
-
-                        {/* Evaluation Options */}
-                        {student.attendance === 'present' && (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6 lg:col-span-3">
                             <EvaluationOption
                               studentId={student.id}
                               type="hafiz"
