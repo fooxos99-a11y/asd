@@ -1,6 +1,13 @@
 "use client"
 
-"use client"
+import React, { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, RotateCcw } from "lucide-react";
+import { useAlertDialog } from "@/hooks/use-confirm-dialog";
 
 // دالة لتحويل التقييم من الإنجليزي إلى العربي
 const evaluationLevelToArabic = (level: EvaluationLevel) => {
@@ -17,11 +24,6 @@ const evaluationLevelToArabic = (level: EvaluationLevel) => {
       return "-";
   }
 };
-// ...existing code...
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, RotateCcw } from "lucide-react"
-import { useAlertDialog } from "@/hooks/use-confirm-dialog"
 
 type EvaluationLevel = "excellent" | "very_good" | "good" | "not_completed" | null
 
@@ -149,7 +151,7 @@ export default function HalaqahManagement() {
 
   const toggleAttendance = (id: number, status: "present" | "absent" | "excused") => {
     setStudents(
-      students.map((s) =>
+      students.map((s: StudentAttendance) =>
         s.id === id
           ? {
               ...s,
@@ -163,7 +165,7 @@ export default function HalaqahManagement() {
 
   const setEvaluation = (studentId: number, type: "hafiz" | "tikrar" | "samaa" | "rabet", level: EvaluationLevel) => {
     setStudents(
-      students.map((s) =>
+      students.map((s: StudentAttendance) =>
         s.id === studentId
           ? {
               ...s,
@@ -176,7 +178,7 @@ export default function HalaqahManagement() {
 
   const setAllEvaluations = (studentId: number, level: EvaluationLevel) => {
     setStudents(
-      students.map((s) =>
+      students.map((s: StudentAttendance) =>
         s.id === studentId
           ? {
               ...s,
@@ -193,13 +195,13 @@ export default function HalaqahManagement() {
   }
 
   const handleReset = () => {
-    setStudents(students.map((s) => ({ ...s, attendance: null, evaluation: {} })))
+    setStudents(students.map((s: StudentAttendance) => ({ ...s, attendance: null, evaluation: {} })))
   }
 
   const handleSave = async () => {
     const allPresentsEvaluated = students
-      .filter((s) => s.attendance === "present")
-      .every((s) => s.evaluation?.hafiz && s.evaluation?.tikrar && s.evaluation?.samaa && s.evaluation?.rabet)
+      .filter((s: StudentAttendance) => s.attendance === "present")
+      .every((s: StudentAttendance) => s.evaluation?.hafiz && s.evaluation?.tikrar && s.evaluation?.samaa && s.evaluation?.rabet)
 
     if (!allPresentsEvaluated) {
       await showAlert("لم يتم تقييم جميع الطلاب الحاضرين! تأكد من تقييم جميع الطلاب قبل الحفظ", "تحذير")
@@ -212,7 +214,7 @@ export default function HalaqahManagement() {
     setSaveStatus("saving")
 
     try {
-      const studentsToSave = students.filter((s) => s.attendance !== null)
+      const studentsToSave = students.filter((s: StudentAttendance) => s.attendance !== null)
 
       for (const student of studentsToSave) {
         if (student.attendance === "present" && student.evaluation) {
@@ -265,15 +267,15 @@ export default function HalaqahManagement() {
   }
 
   const markAllPresent = () => {
-    setStudents(students.map((s) => ({ ...s, attendance: "present", evaluation: s.evaluation || {} })))
+    setStudents(students.map((s: StudentAttendance) => ({ ...s, attendance: "present", evaluation: s.evaluation || {} })))
   }
 
   const markAllAbsent = () => {
-    setStudents(students.map((s) => ({ ...s, attendance: "absent", evaluation: {} })))
+    setStudents(students.map((s: StudentAttendance) => ({ ...s, attendance: "absent", evaluation: {} })))
   }
 
   const markAllExcused = () => {
-    setStudents(students.map((s) => ({ ...s, attendance: "excused", evaluation: {} })))
+    setStudents(students.map((s: StudentAttendance) => ({ ...s, attendance: "excused", evaluation: {} })))
   }
 
   const halaqahName = teacherData?.halaqah || "الحلقة"
@@ -289,7 +291,7 @@ export default function HalaqahManagement() {
     label: string
     notCompletedText: string
   }) => {
-    const student = students.find((s) => s.id === studentId)
+    const student = students.find((s: StudentAttendance) => s.id === studentId)
     const currentLevel = student?.evaluation?.[type] || null
 
     return (
@@ -385,7 +387,7 @@ export default function HalaqahManagement() {
             <>
               {/* Student List */}
               <div className="space-y-4">
-                {students.map((student) => (
+                {students.map((student: StudentAttendance) => (
                   <Card key={student.id} className="border-2 border-[#35A4C7]/20 shadow-lg">
                     <CardContent className="pt-6">
                       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
