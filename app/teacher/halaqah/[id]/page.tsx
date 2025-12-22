@@ -162,17 +162,32 @@ export default function HalaqahManagement() {
     )
   }
 
+  // منع التقييم أكثر من مرة في اليوم
+  // منع تغيير أي تقييم للطالب بعد أول تقييم له في اليوم (لكل الأنواع)
   const setEvaluation = (studentId: number, type: "hafiz" | "tikrar" | "samaa" | "rabet", level: EvaluationLevel) => {
-    setStudents(
-      students.map((s: StudentAttendance) =>
-        s.id === studentId
+    setStudents((prevStudents) =>
+      prevStudents.map((s: StudentAttendance) => {
+        if (
+          s.id === studentId &&
+          s.evaluation &&
+          (
+            s.evaluation.hafiz ||
+            s.evaluation.tikrar ||
+            s.evaluation.samaa ||
+            s.evaluation.rabet
+          )
+        ) {
+          // إذا تم تقييم الطالب لأي نوع، لا تسمح بالتغيير لأي نوع آخر
+          return s;
+        }
+        return s.id === studentId
           ? {
               ...s,
               evaluation: { ...s.evaluation, [type]: level },
             }
-          : s,
-      ),
-    )
+          : s;
+      })
+    );
   }
 
   const setAllEvaluations = (studentId: number, level: EvaluationLevel) => {
@@ -198,22 +213,31 @@ export default function HalaqahManagement() {
   }
 
   const handleSave = async () => {
-    const allPresentsEvaluated = students
-      .filter((s: StudentAttendance) => s.attendance === "present")
-      .every((s: StudentAttendance) => s.evaluation?.hafiz && s.evaluation?.tikrar && s.evaluation?.samaa && s.evaluation?.rabet)
-
-    if (!allPresentsEvaluated) {
-      await showAlert("لم يتم تقييم جميع الطلاب الحاضرين! تأكد من تقييم جميع الطلاب قبل الحفظ", "تحذير")
-      return
+    // تحقق أن كل طالب تم تحديد حالة الحضور له
+    const allAttendanceSelected = students.every((s: StudentAttendance) => s.attendance !== null);
+    if (!allAttendanceSelected) {
+      await showAlert("الرجاء تحديد حالة الحضور لكل طالب", "تنبيه");
+      return;
     }
 
-    console.log("[v0] Saving attendance and evaluation data:", students)
+    // تحقق من تقييم الطلاب الحاضرين فقط
+    const presentStudents = students.filter((s: StudentAttendance) => s.attendance === "present");
+    const allPresentsEvaluated = presentStudents.length === 0 || presentStudents.every((s: StudentAttendance) =>
+      s.evaluation?.hafiz &&
+      s.evaluation?.tikrar &&
+      s.evaluation?.samaa &&
+      s.evaluation?.rabet
+    );
+    if (!allPresentsEvaluated) {
+      await showAlert("الرجاء تقييم جميع الطلاب الحاضرين", "تنبيه");
+      return;
+    }
 
-    setIsSaving(true)
-    setSaveStatus("saving")
+    setIsSaving(true);
+    setSaveStatus("saving");
 
     try {
-      const studentsToSave = students.filter((s: StudentAttendance) => s.attendance !== null)
+      const studentsToSave = students.filter((s: StudentAttendance) => s.attendance !== null);
 
       for (const student of studentsToSave) {
         if (student.attendance === "present" && student.evaluation) {
@@ -230,7 +254,7 @@ export default function HalaqahManagement() {
               samaa_level: student.evaluation.samaa || "not_completed",
               rabet_level: student.evaluation.rabet || "not_completed",
             }),
-          })
+          });
         } else if (student.attendance === "absent" || student.attendance === "excused") {
           await fetch("/api/attendance", {
             method: "POST",
@@ -245,25 +269,25 @@ export default function HalaqahManagement() {
               samaa_level: "not_completed",
               rabet_level: "not_completed",
             }),
-          })
+          });
         }
       }
 
-      setSaveStatus("success")
-      await showAlert("تم حفظ البيانات بنجاح!", "نجاح")
+      setSaveStatus("success");
+      await showAlert("تم حفظ البيانات بنجاح!", "نجاح");
 
       setTimeout(() => {
-        handleReset()
-        setSaveStatus("idle")
-        setIsSaving(false)
-      }, 500)
+        handleReset();
+        setSaveStatus("idle");
+        setIsSaving(false);
+      }, 500);
     } catch (error) {
-      console.error("[v0] Error saving data:", error)
-      setSaveStatus("idle")
-      setIsSaving(false)
-      await showAlert("حدث خطأ أثناء حفظ البيانات", "خطأ")
+      console.error("[v0] Error saving data:", error);
+      setSaveStatus("idle");
+      setIsSaving(false);
+      await showAlert("حدث خطأ أثناء حفظ البيانات", "خطأ");
     }
-  }
+  } 
 
   const markAllPresent = () => {
     setStudents(students.map((s: StudentAttendance) => ({ ...s, attendance: "present", evaluation: s.evaluation || {} })))
@@ -509,7 +533,7 @@ export default function HalaqahManagement() {
                 <Button
                   onClick={handleSave}
                   className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] hover:from-[#C9A961] hover:to-[#BFA050] text-white font-bold py-6 px-10 text-lg w-[200px]"
-                  disabled={isSaving}
+                  disabled={isSaving || !students.filter((s: StudentAttendance) => s.attendance === "present").every((s: StudentAttendance) => s.evaluation?.hafiz && s.evaluation?.tikrar && s.evaluation?.samaa && s.evaluation?.rabet)}
                 >
                   {saveStatus === "saving" && "جاري الحفظ..."}
                   {saveStatus === "success" && "تم الحفظ!"}
