@@ -108,6 +108,35 @@ export async function POST(request: NextRequest) {
         }
       } else {
         // سجل حضور جديد
+        // تحقق من وجود تقييم قديم لهذا الطالب في هذا اليوم (في حال تم حذف سجل الحضور وأعيد إدخاله)
+        let oldPoints = 0;
+        const { data: oldAttendanceRecord } = await supabase
+          .from("attendance_records")
+          .select("id")
+          .eq("student_id", student_id)
+          .eq("date", todayDate)
+          .maybeSingle();
+        if (oldAttendanceRecord) {
+          const { data: oldEvaluation } = await supabase
+            .from("evaluations")
+            .select("*")
+            .eq("attendance_record_id", oldAttendanceRecord.id)
+            .maybeSingle();
+          if (oldEvaluation) {
+            oldPoints =
+              calculatePoints(oldEvaluation.hafiz_level) +
+              calculatePoints(oldEvaluation.tikrar_level) +
+              calculatePoints(oldEvaluation.samaa_level) +
+              calculatePoints(oldEvaluation.rabet_level);
+            await supabase.from("evaluations").delete().eq("attendance_record_id", oldAttendanceRecord.id);
+            const { data: studentData } = await supabase.from("students").select("points").eq("id", student_id).single();
+            if (studentData) {
+              const currentPoints = studentData.points || 0;
+              const newPoints = Math.max(0, currentPoints - oldPoints);
+              await supabase.from("students").update({ points: newPoints }).eq("id", student_id);
+            }
+          }
+        }
         const { data: newRecord } = await supabase
           .from("attendance_records")
           .insert({ student_id, teacher_id, halaqah, status, date: todayDate })
