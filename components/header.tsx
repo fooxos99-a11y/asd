@@ -267,7 +267,7 @@ export function Header() {
                   ) : userRole === "teacher" ? (
                     <>
                       <DropdownMenuItem
-                        onClick={() => handleDropdownNavClick("/teacher/halaqah/1")}
+                        onClick={() => handleDropdownNavClick("/teacher/halaqah")}
                         className="cursor-pointer text-base py-3 focus:bg-[#f5f1e8] focus:text-[#d8a355] transition-all duration-200"
                       >
                         <Users className="w-5 h-5 ml-2" />
@@ -444,7 +444,7 @@ export function Header() {
                   ) : userRole === "teacher" ? (
                     <>
                       <DropdownMenuItem
-                        onClick={() => handleDropdownNavClick("/teacher/halaqah/1")}
+                        onClick={() => handleDropdownNavClick("/teacher/halaqah")}
                         className="cursor-pointer text-base py-3 focus:bg-[#f5f1e8] focus:text-[#d8a355] transition-all duration-200"
                       >
                         <Users className="w-5 h-5 ml-2" />
