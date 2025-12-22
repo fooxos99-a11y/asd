@@ -113,8 +113,11 @@ export default function CircleManagement() {
         })
 
         if (response.ok) {
+          // امسح الكاش المحلي للحلقات
           localStorage.removeItem("circlesCache")
           localStorage.removeItem("circlesCacheTime")
+          // أرسل حدث لتحديث الهيدر في كل الصفحات المفتوحة
+          window.dispatchEvent(new Event("circlesChanged"))
           await showAlert(`تم إزالة ${name} بنجاح`, "نجاح")
           fetchCircles()
         }
