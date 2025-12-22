@@ -60,6 +60,13 @@ export function Header() {
     }
 
     loadCircles()
+
+    // استمع لأي تغيير في الحلقات (عند الحذف أو الإضافة)
+    const handleCirclesChanged = () => {
+      loadCircles()
+    }
+    window.addEventListener("circlesChanged", handleCirclesChanged)
+    return () => window.removeEventListener("circlesChanged", handleCirclesChanged)
   }, [])
 
   const loadCircles = () => {
