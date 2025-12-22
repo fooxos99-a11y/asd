@@ -64,8 +64,31 @@ export default function LevelPage() {
       const currentUserStr = localStorage.getItem("currentUser");
       if (!currentUserStr) return;
       const currentUser = JSON.parse(currentUserStr);
-      const studentId = localStorage.getItem("studentId") || currentUser.id || currentUser.account_number;
-      console.log("[LEVEL PAGE] studentId:", studentId, "levelId:", levelId);
+      let studentId = localStorage.getItem("studentId");
+      // تحقق إذا كان studentId ليس uuid (أي رقم أو نص قصير)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!studentId || !uuidRegex.test(studentId)) {
+        // جلب uuid من قاعدة البيانات عبر رقم الحساب
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        );
+        let accountNumber = currentUser.account_number || currentUser.id || studentId;
+        const { data: studentRow, error: studentError } = await supabase
+          .from("students")
+          .select("id")
+          .eq("account_number", accountNumber)
+          .maybeSingle();
+        if (studentRow && studentRow.id) {
+          studentId = studentRow.id;
+          localStorage.setItem("studentId", studentId);
+        } else {
+          // إذا لم يوجد uuid، أوقف العملية
+          alert("تعذر جلب معرف الطالب الصحيح. يرجى إعادة تسجيل الدخول.");
+          return;
+        }
+      }
+      console.log("[LEVEL PAGE] studentId (uuid):", studentId, "levelId:", levelId);
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

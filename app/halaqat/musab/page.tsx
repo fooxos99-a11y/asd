@@ -283,8 +283,8 @@ export default function MusabHalaqahPage() {
 
                       {isForest && <ForestLeaves />}
 
-                      <div className="p-4 sm:p-10 flex items-center gap-4 sm:gap-8">
-                        <div className="relative flex-shrink-0">
+                      <div className="p-3 sm:p-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-8">
+                        <div className="relative flex-shrink-0 mb-2 sm:mb-0">
                           <svg
                             width="80"
                             height="92"
@@ -332,9 +332,9 @@ export default function MusabHalaqahPage() {
                           </svg>
                         </div>
 
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 w-full flex flex-col items-center">
                           <h3
-                            className={`text-2xl font-bold mb-2 text-center transition-colors duration-300 ${
+                            className={`text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-center transition-colors duration-300 ${
                               isForest
                                 ? "text-[#166534] group-hover:text-[#14532d]"
                                 : "text-[#023232] group-hover:text-[#1a3a3a]"
@@ -342,7 +342,7 @@ export default function MusabHalaqahPage() {
                           >
                             {student.name}
                           </h3>
-                          <div className="flex flex-wrap gap-2 justify-center mt-3">
+                          <div className="flex flex-wrap gap-1 sm:gap-2 justify-center mt-2 sm:mt-3">
                             {student.badges?.map((badge, idx) => (
                               <div key={idx}>{renderBadge(badge)}</div>
                             ))}
@@ -350,7 +350,7 @@ export default function MusabHalaqahPage() {
                         </div>
 
                         <div
-                          className={`flex flex-col items-center rounded-2xl px-8 py-4 border-2 shadow-inner ${
+                          className={`flex flex-col items-center rounded-2xl px-6 py-3 sm:px-8 sm:py-4 border-2 shadow-inner mt-2 sm:mt-0 w-full sm:w-auto ${
                             isForest ? "shadow-[inset_0_2px_8px_rgba(22,163,74,0.2)]" : ""
                           }`}
                           style={{
@@ -359,12 +359,12 @@ export default function MusabHalaqahPage() {
                           }}
                         >
                           <div
-                            className={`text-4xl font-bold leading-none ${isForest ? "text-[#166534]" : "text-[#023232]"}`}
+                            className={`text-2xl sm:text-4xl font-bold leading-none ${isForest ? "text-[#166534]" : "text-[#023232]"}`}
                           >
                             {student.points || 0}
                           </div>
                           <div
-                            className={`text-xs font-bold mt-2 tracking-wide ${isForest ? "text-[#15803d]" : "text-gray-600"}`}
+                            className={`text-xs font-bold mt-1 sm:mt-2 tracking-wide ${isForest ? "text-[#15803d]" : "text-gray-600"}`}
                           >
                             نقطة
                           </div>

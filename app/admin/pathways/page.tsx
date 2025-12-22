@@ -610,12 +610,42 @@ export default function AdminPathwaysPage() {
                             disabled={isLoading}
                           />
                         ) : (
-                          <Input
-                            value={contentUrl || ""}
-                            onChange={(e) => setContentUrl(e.target.value)}
-                            placeholder={contentType === "pdf" ? "رابط ملف PDF" : "رابط الفيديو"}
-                            disabled={isLoading}
-                          />
+                          <div className="flex flex-col gap-2">
+                            <Input
+                              type="file"
+                              accept={contentType === "pdf" ? ".pdf" : "video/*"}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                // رفع الملف إلى السيرفر أو التخزين السحابي
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                // مثال: رفع إلى API محلي
+                                setIsLoading(true);
+                                try {
+                                  const res = await fetch("/api/upload", {
+                                    method: "POST",
+                                    body: formData,
+                                  });
+                                  const data = await res.json();
+                                  if (data.url) setContentUrl(data.url);
+                                } catch {
+                                  setContentUrl("");
+                                }
+                                setIsLoading(false);
+                              }}
+                              disabled={isLoading}
+                            />
+                            {contentUrl && (
+                              <a href={contentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#d8a355]">تم رفع الملف بنجاح (اضغط للمعاينة)</a>
+                            )}
+                            <Input
+                              value={contentUrl || ""}
+                              onChange={(e) => setContentUrl(e.target.value)}
+                              placeholder={contentType === "pdf" ? "رابط ملف PDF (اختياري)" : "رابط الفيديو (اختياري)"}
+                              disabled={isLoading}
+                            />
+                          </div>
                         )}
                       </div>
 

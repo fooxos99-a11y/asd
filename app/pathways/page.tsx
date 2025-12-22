@@ -261,29 +261,30 @@ export default function PathwaysPage() {
                     )}
 
                     {level.isLocked && (
-                      <div className="flex items-center justify-center gap-2 mb-2 md:mb-3">
-                        <Lock className="w-4 h-4 md:w-6 md:h-6 text-gray-500" />
+                      <div className="flex items-center justify-center gap-1 mb-1 md:gap-2 md:mb-3">
+                        <Lock className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-500" />
                       </div>
                     )}
 
                     <div
-                      className={`text-3xl md:text-5xl font-bold mb-1 md:mb-2 ${level.isCompleted ? "text-[#d8a355]" : "text-[#d8a355]"}`}
+                      className={`text-xl sm:text-2xl md:text-5xl font-bold mb-1 md:mb-2 ${level.isCompleted ? "text-[#d8a355]" : "text-[#d8a355]"}`}
+                      style={{textAlign:'center'}}
                     >
                       {level.id}
                     </div>
 
                     {!level.isLocked && (
                       <h3
-                        className={`text-sm md:text-lg font-bold mb-1 ${level.isCompleted ? "text-[#1a2332]" : "text-[#1a2332]"}`}
+                        className={`text-xs sm:text-sm md:text-lg font-bold mb-1 text-center ${level.isCompleted ? "text-[#1a2332]" : "text-[#1a2332]"}`}
                       >
                         {level.title}
                       </h3>
                     )}
 
-                    {level.isLocked && <p className="text-xs md:text-sm font-semibold text-gray-500 mb-1">الأسبوع {level.week}</p>}
+                    {level.isLocked && <p className="text-[10px] sm:text-xs md:text-sm font-semibold text-gray-500 mb-1 text-center">الأسبوع {level.week}</p>}
 
                     {!level.isLocked && (
-                      <p className={`text-xs md:text-sm ${level.isCompleted ? "text-gray-600" : "text-gray-600"}`}>
+                      <p className={`text-[10px] sm:text-xs md:text-sm ${level.isCompleted ? "text-gray-600" : "text-gray-600"} text-center`}>
                         {level.description}
                       </p>
                     )}

@@ -138,10 +138,10 @@ export default function HalaqahManagement() {
       students.map((s) => {
         if (s.id !== id) return s;
         if (status === "absent" || status === "excused") {
-          return { ...s, attendance: status, evaluation: {} };
+          return { ...s, attendance: status, evaluation: undefined };
         }
         // إذا كانت التقييمات فارغة عند التحويل إلى حاضر، هيئها بقيم not_completed
-        const defaultEval = {
+        const defaultEval: EvaluationOption = {
           hafiz: "not_completed",
           tikrar: "not_completed",
           samaa: "not_completed",
@@ -150,9 +150,9 @@ export default function HalaqahManagement() {
         return {
           ...s,
           attendance: status,
-          evaluation: Object.keys(s.evaluation || {}).length > 0 ? s.evaluation : defaultEval,
+          evaluation: s.evaluation && Object.keys(s.evaluation).length > 0 ? s.evaluation : defaultEval,
         };
-      }),
+      })
     );
   }
 
@@ -372,82 +372,78 @@ export default function HalaqahManagement() {
               <div className="space-y-4">
                 {students.map((student) => (
                   <Card key={student.id} className="border-2 border-[#35A4C7]/20 shadow-lg">
-                    <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div className="lg:col-span-1">
-                          <div className="space-y-4">
-                            <div>
-                              <p className="text-xl font-bold text-[#1a2332]">{student.name}</p>
-                            </div>
-                            <div className="flex gap-3">
-                              <Button
-                                onClick={() => toggleAttendance(student.id, "present")}
-                                className={`flex-1 py-6 text-base font-bold transition-all ${
-                                  student.attendance === "present"
-                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
-                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
-                                }`}
-                              >
-                                حاضر
-                              </Button>
-                              <Button
-                                onClick={() => toggleAttendance(student.id, "absent")}
-                                className={`flex-1 py-6 text-base font-bold transition-all ${
-                                  student.attendance === "absent"
-                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
-                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
-                                }`}
-                              >
-                                غائب
-                              </Button>
-                              <Button
-                                onClick={() => toggleAttendance(student.id, "excused")}
-                                className={`flex-1 py-6 text-base font-bold transition-all ${
-                                  student.attendance === "excused"
-                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
-                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
-                                }`}
-                              >
-                                مستأذن
-                              </Button>
-                            </div>
-                            {student.attendance === "present" && (
-                              <div className="space-y-2 pt-2">
-                                <p className="text-sm font-semibold text-[#1a2332] text-center">تقييم الكل:</p>
-                                <div className="grid grid-cols-2 gap-2">
-                                  <Button
-                                    onClick={() => setAllEvaluations(student.id, "excellent")}
-                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                  >
-                                    ممتاز
-                                  </Button>
-                                  <Button
-                                    onClick={() => setAllEvaluations(student.id, "very_good")}
-                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                  >
-                                    جيد جداً
-                                  </Button>
-                                  <Button
-                                    onClick={() => setAllEvaluations(student.id, "good")}
-                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                  >
-                                    جيد
-                                  </Button>
-                                  <Button
-                                    onClick={() => setAllEvaluations(student.id, "not_completed")}
-                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                  >
-                                    لم يكمل
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
+                    <CardContent className="pt-4 sm:pt-6">
+                      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-1 lg:grid-cols-4 sm:gap-6">
+                        <div className="lg:col-span-1 flex flex-col gap-3">
+                          <p className="text-lg sm:text-xl font-bold text-[#1a2332] text-center">{student.name}</p>
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+                            <Button
+                              onClick={() => toggleAttendance(student.id, 'present')}
+                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
+                                student.attendance === 'present'
+                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
+                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
+                              }`}
+                            >
+                              حاضر
+                            </Button>
+                            <Button
+                              onClick={() => toggleAttendance(student.id, 'absent')}
+                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
+                                student.attendance === 'absent'
+                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
+                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
+                              }`}
+                            >
+                              غائب
+                            </Button>
+                            <Button
+                              onClick={() => toggleAttendance(student.id, 'excused')}
+                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
+                                student.attendance === 'excused'
+                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
+                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
+                              }`}
+                            >
+                              مستأذن
+                            </Button>
                           </div>
+                          {student.attendance === 'present' && (
+                            <div className="space-y-2 pt-2">
+                              <p className="text-xs sm:text-sm font-semibold text-[#1a2332] text-center">تقييم الكل:</p>
+                              <div className="grid grid-cols-2 gap-1 sm:gap-2">
+                                <Button
+                                  onClick={() => setAllEvaluations(student.id, 'excellent')}
+                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                >
+                                  ممتاز
+                                </Button>
+                                <Button
+                                  onClick={() => setAllEvaluations(student.id, 'very_good')}
+                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                >
+                                  جيد جداً
+                                </Button>
+                                <Button
+                                  onClick={() => setAllEvaluations(student.id, 'good')}
+                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                >
+                                  جيد
+                                </Button>
+                                <Button
+                                  onClick={() => setAllEvaluations(student.id, 'not_completed')}
+                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                >
+                                  لم يكمل
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
                         {/* Evaluation Options */}
-                        {student.attendance === "present" && (
-                          <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {student.attendance === 'present' && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6 lg:col-span-3">
                             <EvaluationOption
                               studentId={student.id}
                               type="hafiz"

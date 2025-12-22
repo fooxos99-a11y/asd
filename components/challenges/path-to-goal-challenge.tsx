@@ -18,51 +18,65 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
   const [gameOver, setGameOver] = useState(false)
   const [path, setPath] = useState<{ x: number; y: number }[]>([])
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [startPos] = useState({ x: 50, y: 250 })
-  const [goalPos] = useState({ x: 750, y: 250 })
+  // Responsive canvas size
+  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 500 })
+  const [startPos, setStartPos] = useState({ x: 50, y: 250 })
+  const [goalPos, setGoalPos] = useState({ x: 750, y: 250 })
 
-  const [obstacles] = useState(() => {
+  // إعادة رسم العقبات عند تغيير الحجم
+  const [obstacles, setObstacles] = useState<any[]>([])
+
+  // تحديث حجم الكانفس حسب الشاشة
+  useEffect(() => {
+    function updateSize() {
+      let w = window.innerWidth
+      let h = window.innerHeight
+      // اجعل الكانفس يأخذ 98% من العرض و 60-80% من الارتفاع حسب الاتجاه
+      let isPortrait = h > w
+      let width = isPortrait ? w * 0.98 : w * 0.8
+      let height = isPortrait ? h * 0.55 : h * 0.8
+      // الحد الأدنى والأقصى
+      width = Math.max(320, Math.min(width, 900))
+      height = Math.max(220, Math.min(height, 700))
+      setCanvasSize({ width, height })
+      setStartPos({ x: width * 0.06, y: height / 2 })
+      setGoalPos({ x: width * 0.94, y: height / 2 })
+    }
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    window.addEventListener('orientationchange', updateSize)
+    return () => {
+      window.removeEventListener('resize', updateSize)
+      window.removeEventListener('orientationchange', updateSize)
+    }
+  }, [])
+
+  // إعادة رسم العقبات عند تغيير الحجم
+  useEffect(() => {
     const obs = []
-    const canvasHeight = 500
-    const gapSize = 50 // Size of the gap to pass through
-
-    // Create vertical line obstacles with gaps at random positions
-    const columns = [180, 280, 380, 480, 580, 680]
-
+    const canvasHeight = canvasSize.height
+    const canvasWidth = canvasSize.width
+    const gapSize = Math.max(40, canvasHeight * 0.09)
+    // عدد الأعمدة حسب العرض
+    const columns = []
+    let colCount = Math.floor((canvasWidth - 100) / 100)
+    for (let i = 1; i <= colCount; i++) {
+      columns.push(80 + i * ((canvasWidth - 160) / (colCount + 1)))
+    }
     columns.forEach((xPos) => {
-      // Random gap position for each column
-      const minGap = 60
-      const maxGap = canvasHeight - gapSize - 60
+      const minGap = 40
+      const maxGap = canvasHeight - gapSize - 40
       const gapStart = minGap + Math.random() * (maxGap - minGap)
       const gapEnd = gapStart + gapSize
-
-      // Top line (from top to gap start)
-      if (gapStart > 30) {
-        obs.push({
-          type: 'line',
-          x1: xPos,
-          y1: 20,
-          x2: xPos,
-          y2: gapStart,
-          thickness: 6,
-        })
+      if (gapStart > 20) {
+        obs.push({ type: 'line', x1: xPos, y1: 15, x2: xPos, y2: gapStart, thickness: 6 })
       }
-
-      // Bottom line (from gap end to bottom)
-      if (gapEnd < canvasHeight - 30) {
-        obs.push({
-          type: 'line',
-          x1: xPos,
-          y1: gapEnd,
-          x2: xPos,
-          y2: canvasHeight - 20,
-          thickness: 6,
-        })
+      if (gapEnd < canvasHeight - 20) {
+        obs.push({ type: 'line', x1: xPos, y1: gapEnd, x2: xPos, y2: canvasHeight - 15, thickness: 6 })
       }
     })
-
-    return obs
-  })
+    setObstacles(obs)
+  }, [canvasSize])
 
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) {
@@ -89,7 +103,7 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
 
   useEffect(() => {
     drawCanvas()
-  }, [path, obstacles])
+  }, [path, obstacles, canvasSize])
 
   const drawCanvas = () => {
     const canvas = canvasRef.current
@@ -100,7 +114,7 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    const gradient = ctx.createLinearGradient(0, 0, 800, 500)
+    const gradient = ctx.createLinearGradient(0, 0, canvasSize.width, canvasSize.height)
     gradient.addColorStop(0, "#faf8f5")
     gradient.addColorStop(0.5, "#f5f0e8")
     gradient.addColorStop(1, "#faf8f5")
@@ -155,14 +169,14 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
     
     // Flag pole
     ctx.fillStyle = "#8b6f47"
-    ctx.fillRect(startPos.x - 3, startPos.y - 35, 6, 50)
-    
+    ctx.fillRect(startPos.x - 3, startPos.y - canvasSize.height * 0.07, 6, canvasSize.height * 0.14)
+
     // Flag
     ctx.fillStyle = "#d8a355"
     ctx.beginPath()
-    ctx.moveTo(startPos.x + 3, startPos.y - 35)
-    ctx.lineTo(startPos.x + 35, startPos.y - 20)
-    ctx.lineTo(startPos.x + 3, startPos.y - 5)
+    ctx.moveTo(startPos.x + 3, startPos.y - canvasSize.height * 0.07)
+    ctx.lineTo(startPos.x + canvasSize.width * 0.045, startPos.y - canvasSize.height * 0.04)
+    ctx.lineTo(startPos.x + 3, startPos.y + canvasSize.height * 0.07 - canvasSize.height * 0.14)
     ctx.closePath()
     ctx.fill()
     
@@ -176,8 +190,8 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
     ctx.shadowColor = "rgba(39, 174, 96, 0.5)"
     ctx.shadowBlur = 15
     
-    const doorWidth = 50
-    const doorHeight = 70
+    const doorWidth = canvasSize.width * 0.06
+    const doorHeight = canvasSize.height * 0.14
     const doorX = goalPos.x - doorWidth / 2
     const doorY = goalPos.y - doorHeight / 2
     
@@ -313,7 +327,7 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
   }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-[#faf8f5] via-[#f5ead8] to-[#faf8f5]">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-[#faf8f5] via-[#f5ead8] to-[#faf8f5] !p-0">
       <div className="absolute top-6 right-6">
         <div className="flex items-center gap-3 bg-gradient-to-r from-[#d8a355] to-[#c89547] backdrop-blur px-6 py-3 rounded-2xl shadow-xl">
           <Clock className="w-6 h-6 text-white" />
@@ -336,22 +350,23 @@ export function PathToGoalChallenge({ onSuccess, onFailure, timeLimit = 60 }: Pa
         </p>
       </div>
 
-      <div className="relative shadow-2xl rounded-3xl">
+      <div className="relative shadow-2xl rounded-3xl w-full flex items-center justify-center" style={{height:canvasSize.height+32}}>
         <canvas
           ref={canvasRef}
-          width={800}
-          height={500}
+          width={canvasSize.width}
+          height={canvasSize.height}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className="border-8 border-[#d8a355] rounded-3xl bg-white cursor-crosshair hover:border-[#c89547] transition-colors"
+          className="border-8 border-[#d8a355] rounded-3xl bg-white cursor-crosshair hover:border-[#c89547] transition-colors w-full h-full"
+          style={{maxWidth:'100vw',maxHeight:'80vh',touchAction:'none'}}
         />
         {!isDrawing && path.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-gradient-to-r from-[#d8a355] to-[#c89547] text-white px-8 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-bounce">
+            <div className="bg-gradient-to-r from-[#d8a355] to-[#c89547] text-white px-4 py-2 sm:px-8 sm:py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-bounce text-xs sm:text-lg">
               <Zap className="w-6 h-6" />
-              <span className="font-bold text-lg">اضغط على البداية وابدأ الرسم بدون توقف!</span>
+              <span className="font-bold">اضغط على البداية وابدأ الرسم بدون توقف!</span>
             </div>
           </div>
         )}

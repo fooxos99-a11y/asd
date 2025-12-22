@@ -4,7 +4,9 @@ import Image from "next/image"
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[auto] flex items-start justify-center overflow-hidden bg-gradient-to-b from-white via-[#faf8f5] to-white px-4 sm:px-6 pt-0 pb-2 sm:pb-3">
+    <section
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-white via-[#faf8f5] to-white px-4 sm:px-6 pt-0 pb-2 sm:pb-3"
+    >
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#d8a355] to-transparent opacity-50" />
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#d8a355] to-transparent opacity-50" />
 
@@ -16,7 +18,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 text-center px-4 sm:px-6 w-full max-w-7xl mx-auto -mt-12 sm:-mt-16">
+      <div className="relative z-10 text-center px-4 sm:px-6 w-full max-w-7xl mx-auto flex flex-col items-center justify-center min-h-screen">
         <div className="flex justify-center animate-in fade-in duration-1000">
           <div className="relative">
             <div className="absolute inset-0 bg-[#00312e]/10 blur-3xl rounded-full" />
