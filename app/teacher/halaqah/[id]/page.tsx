@@ -135,42 +135,17 @@ export default function HalaqahManagement() {
 
   const toggleAttendance = (id: number, status: "present" | "absent" | "excused") => {
     setStudents(
-      students.map((s) => {
-        if (s.id !== id) return s;
-        if (status === "absent" || status === "excused") {
-          return { ...s, attendance: status, evaluation: undefined };
-        }
-        // إذا كانت التقييمات فارغة عند التحويل إلى حاضر، هيئها بقيم not_completed
-        const defaultEval: EvaluationOption = {
-          hafiz: "not_completed",
-          tikrar: "not_completed",
-          samaa: "not_completed",
-          rabet: "not_completed",
-        };
-        return {
-          ...s,
-          attendance: status,
-          evaluation: s.evaluation && Object.keys(s.evaluation).length > 0 ? s.evaluation : defaultEval,
-        };
-      })
-    );
+      students.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              attendance: status,
+              evaluation: status === "absent" || status === "excused" ? {} : s.evaluation,
+            }
+          : s,
+      ),
+    )
   }
-
-// التعديل: لا تصفر التقييمات عند اختيار حاضر، فقط عند اختيار غائب أو مستأذن
-// الكود المعدل:
-//  const toggleAttendance = (id: number, status: "present" | "absent" | "excused") => {
-//    setStudents(
-//      students.map((s) =>
-//        s.id === id
-//          ? {
-//              ...s,
-//              attendance: status,
-//              evaluation: (status === "absent" || status === "excused") ? {} : (s.evaluation || {}),
-//            }
-//          : s,
-//      ),
-//    )
-//  }
 
   const setEvaluation = (studentId: number, type: "hafiz" | "tikrar" | "samaa" | "rabet", level: EvaluationLevel) => {
     setStudents(
@@ -217,30 +192,56 @@ export default function HalaqahManagement() {
       return
     }
 
+    console.log("[v0] Saving attendance and evaluation data:", students)
+
     setIsSaving(true)
     setSaveStatus("saving")
+
     try {
       const studentsToSave = students.filter((s) => s.attendance !== null)
-      await fetch("/api/attendance/batch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          students: studentsToSave,
-          teacher_id: teacherData.id,
-          halaqah: teacherData.halaqah,
-        }),
-      })
+
+      for (const student of studentsToSave) {
+        if (student.attendance === "present" && student.evaluation) {
+          await fetch("/api/attendance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              student_id: student.id,
+              teacher_id: teacherData.id,
+              halaqah: teacherData.halaqah,
+              status: student.attendance,
+              hafiz_level: student.evaluation.hafiz || "not_completed",
+              tikrar_level: student.evaluation.tikrar || "not_completed",
+              samaa_level: student.evaluation.samaa || "not_completed",
+              rabet_level: student.evaluation.rabet || "not_completed",
+            }),
+          })
+        } else if (student.attendance === "absent" || student.attendance === "excused") {
+          await fetch("/api/attendance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              student_id: student.id,
+              teacher_id: teacherData.id,
+              halaqah: teacherData.halaqah,
+              status: student.attendance,
+              hafiz_level: "not_completed",
+              tikrar_level: "not_completed",
+              samaa_level: "not_completed",
+              rabet_level: "not_completed",
+            }),
+          })
+        }
+      }
+
       setSaveStatus("success")
       await showAlert("تم حفظ البيانات بنجاح!", "نجاح")
-      // إعادة جلب الطلاب بعد الحفظ تلقائيًا
-      if (teacherData?.halaqah) {
-        await fetchStudents(teacherData.halaqah)
-      }
+
       setTimeout(() => {
         handleReset()
         setSaveStatus("idle")
         setIsSaving(false)
-      }, 100)
+      }, 500)
     } catch (error) {
       console.error("[v0] Error saving data:", error)
       setSaveStatus("idle")
@@ -372,76 +373,82 @@ export default function HalaqahManagement() {
               <div className="space-y-4">
                 {students.map((student) => (
                   <Card key={student.id} className="border-2 border-[#35A4C7]/20 shadow-lg">
-                    <CardContent className="pt-4 sm:pt-6">
-                      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-1 lg:grid-cols-4 sm:gap-6">
-                        <div className="lg:col-span-1 flex flex-col gap-3">
-                          <p className="text-lg sm:text-xl font-bold text-[#1a2332] text-center">{student.name}</p>
-                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
-                            <Button
-                              onClick={() => toggleAttendance(student.id, 'present')}
-                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
-                                student.attendance === 'present'
-                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
-                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
-                              }`}
-                            >
-                              حاضر
-                            </Button>
-                            <Button
-                              onClick={() => toggleAttendance(student.id, 'absent')}
-                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
-                                student.attendance === 'absent'
-                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
-                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
-                              }`}
-                            >
-                              غائب
-                            </Button>
-                            <Button
-                              onClick={() => toggleAttendance(student.id, 'excused')}
-                              className={`w-full py-3 sm:py-6 text-sm sm:text-base font-bold transition-all ${
-                                student.attendance === 'excused'
-                                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]'
-                                  : 'bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]'
-                              }`}
-                            >
-                              مستأذن
-                            </Button>
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div className="lg:col-span-1">
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-xl font-bold text-[#1a2332]">{student.name}</p>
+                            </div>
+                            <div className="flex gap-3">
+                              <Button
+                                onClick={() => toggleAttendance(student.id, "present")}
+                                className={`flex-1 py-6 text-base font-bold transition-all ${
+                                  student.attendance === "present"
+                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
+                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
+                                }`}
+                              >
+                                حاضر
+                              </Button>
+                              <Button
+                                onClick={() => toggleAttendance(student.id, "absent")}
+                                className={`flex-1 py-6 text-base font-bold transition-all ${
+                                  student.attendance === "absent"
+                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
+                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
+                                }`}
+                              >
+                                غائب
+                              </Button>
+                              <Button
+                                onClick={() => toggleAttendance(student.id, "excused")}
+                                className={`flex-1 py-6 text-base font-bold transition-all ${
+                                  student.attendance === "excused"
+                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#C9A961] text-[#023232] border-2 border-[#D4AF37]"
+                                    : "bg-white text-[#1a2332] border-2 border-[#D4AF37] hover:bg-[#f5f1e8]"
+                                }`}
+                              >
+                                مستأذن
+                              </Button>
+                            </div>
+                            {student.attendance === "present" && (
+                              <div className="space-y-2 pt-2">
+                                <p className="text-sm font-semibold text-[#1a2332] text-center">تقييم الكل:</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <Button
+                                    onClick={() => setAllEvaluations(student.id, "excellent")}
+                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                  >
+                                    ممتاز
+                                  </Button>
+                                  <Button
+                                    onClick={() => setAllEvaluations(student.id, "very_good")}
+                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                  >
+                                    جيد جداً
+                                  </Button>
+                                  <Button
+                                    onClick={() => setAllEvaluations(student.id, "good")}
+                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                  >
+                                    جيد
+                                  </Button>
+                                  <Button
+                                    onClick={() => setAllEvaluations(student.id, "not_completed")}
+                                    className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
+                                  >
+                                    لم يكمل
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
 
-                        {/* تقييم الكل + خيارات التقييم في صف واحد */}
-                        {student.attendance === 'present' && (
-                          <div className="grid grid-cols-5 gap-2 w-full items-start lg:col-span-3">
-                            <div className="flex flex-col items-center">
-                              <p className="text-xs sm:text-sm font-semibold text-[#1a2332] text-center mb-2">تقييم الكل:</p>
-                              <div className="grid grid-cols-2 gap-1 sm:gap-2">
-                                <Button
-                                  onClick={() => setAllEvaluations(student.id, 'excellent')}
-                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                >
-                                  ممتاز
-                                </Button>
-                                <Button
-                                  onClick={() => setAllEvaluations(student.id, 'very_good')}
-                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                >
-                                  جيد جداً
-                                </Button>
-                                <Button
-                                  onClick={() => setAllEvaluations(student.id, 'good')}
-                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                >
-                                  جيد
-                                </Button>
-                                <Button
-                                  onClick={() => setAllEvaluations(student.id, 'not_completed')}
-                                  className="bg-white border-2 border-[#D4AF37] text-[#1a2332] hover:bg-gradient-to-r hover:from-[#D4AF37] hover:to-[#C9A961] hover:text-[#023232] text-xs py-2 transition-all"
-                                >
-                                  لم يكمل
-                                </Button>
-                              </div>
-                            </div>
+                        {/* Evaluation Options */}
+                        {student.attendance === "present" && (
+                          <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-6">
                             <EvaluationOption
                               studentId={student.id}
                               type="hafiz"
