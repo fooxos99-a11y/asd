@@ -213,7 +213,7 @@ export function Header() {
         </div>
       )}
 
-      <header className="bg-[#00312e] text-white py-1.5 px-3 sm:px-4 md:px-6 z-50">
+      <header className="bg-[#00312e] text-white py-7 sm:py-1.5 px-3 sm:px-4 md:px-6 z-50">
         <div className="container mx-auto flex items-center justify-between">
           {/* Left side - Hamburger menu (mobile only) */}
           <button
@@ -247,8 +247,8 @@ export function Header() {
               <DropdownMenu open={isMobileProfileDropdownOpen} onOpenChange={setIsMobileProfileDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                   <button className="focus:outline-none">
-                    <div className="w-8 h-8 rounded-full bg-[#d8a355] flex items-center justify-center cursor-pointer ring-2 ring-[#d8a355] ring-offset-2 ring-offset-[#00312e] hover:ring-offset-4 transition-all duration-300">
-                      <User className="w-4 h-4 text-[#00312e]" strokeWidth={2.5} />
+                    <div className="w-12 h-12 rounded-full bg-[#d8a355] flex items-center justify-center cursor-pointer ring-2 ring-[#d8a355] ring-offset-2 ring-offset-[#00312e] hover:ring-offset-4 transition-all duration-300">
+                      <User className="w-7 h-7 text-[#00312e]" strokeWidth={2.5} />
                     </div>
                   </button>
                 </DropdownMenuTrigger>
@@ -306,7 +306,7 @@ export function Header() {
                   scrollToTop()
                   router.push("/login")
                 }}
-                className="bg-gradient-to-r from-[#d8a355] to-[#c99347] hover:from-[#c99347] hover:to-[#b88341] text-[#00312e] font-bold px-3 py-1.5 text-xs h-8"
+                className="bg-gradient-to-r from-[#d8a355] to-[#c99347] hover:from-[#c99347] hover:to-[#b88341] text-[#00312e] font-bold px-4 py-2 text-lg h-11 sm:px-3 sm:py-1.5 sm:text-xs sm:h-8"
               >
                 تسجيل الدخول
               </Button>
@@ -494,7 +494,7 @@ export function Header() {
         {/* Mobile menu dropdown */}
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-[#d8a355]/20 animate-in slide-in-from-top-2 duration-200 bg-white text-[#1a2332] rounded-b-lg -mx-3 px-3 shadow-lg">
-            <nav className="flex flex-col gap-3 mt-4">
+            <nav className="flex flex-col gap-3 mt-4 text-lg font-bold">
               <button
                 onClick={() => {
                   handleNavClick("/")
