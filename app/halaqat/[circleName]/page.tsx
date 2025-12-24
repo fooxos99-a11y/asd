@@ -542,24 +542,24 @@ export default function CircleLeaderboard() {
                       >
                         {cardEffect.extraElements}
 
+                        {isPremiumTheme && <ThemeDecorations theme={student.preferred_theme} />}
+
                         <div
-                          className={`absolute top-0 left-0 w-full h-2 ${themeType === "forest" ? "h-3" : ""}`}
+                          className="absolute top-0 left-0 w-full h-1.5 md:h-2"
                           style={{
                             backgroundImage: isPremiumTheme
                               ? `linear-gradient(to right, ${themeColors.primary}, ${themeColors.secondary}, ${themeColors.primary})`
-                              : `linear-gradient(to right, ${themeColors.primary}, ${themeColors.secondary}, ${themeColors.primary})`,
+                              : `linear-gradient(to right, ${themeColors.primary}, ${themeColors.secondary})`,
                           }}
                         />
 
-                        <ThemeDecorations theme={student.preferred_theme} />
-
-                        <div className="p-6 flex items-center gap-6 relative z-10">
+                        <div className="p-3 md:p-6 flex items-center gap-3 md:gap-6 relative z-10">
                           <div className="relative flex-shrink-0">
                             <svg
-                              width="60"
-                              height="70"
+                              width="45"
+                              height="52"
                               viewBox="0 0 80 92"
-                              className={`group-hover:scale-110 transition-transform duration-300 ${themeType === "forest" ? "drop-shadow-[0_4px_12px_rgba(34,197,94,0.5)]" : ""}`}
+                              className="md:w-[60px] md:h-[70px] group-hover:scale-110 transition-transform duration-300"
                             >
                               <defs>
                                 <linearGradient id={`grad-${student.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -589,39 +589,41 @@ export default function CircleLeaderboard() {
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-center gap-3 mb-2">
+                            <div className="flex items-center justify-center gap-2 md:gap-3 mb-1 md:mb-2">
                               <h3
-                                className={`text-2xl font-bold transition-colors duration-300 ${
-                                  themeType === "forest"
-                                    ? "text-[#166534] group-hover:text-[#14532d]"
-                                    : "text-[#023232] group-hover:text-[#1a3a3a]"
-                                }`}
+                                className="text-lg md:text-2xl font-bold transition-colors duration-300 text-[#023232] group-hover:text-[#1a3a3a]"
                                 style={{ fontFamily: getFontFamily(student.font_family) }}
                               >
                                 {student.name}
                               </h3>
                               {getBadgeIcon(student.id) && (
-                                <div className="flex-shrink-0">{getBadgeIcon(student.id)}</div>
+                                <div className="flex-shrink-0 scale-75 md:scale-100">
+                                  {getBadgeIcon(student.id)}
+                                </div>
                               )}
                             </div>
-                            <div className="flex flex-wrap gap-2 justify-center mt-2">
+                            <div className="flex flex-wrap gap-1 md:gap-2 justify-center mt-1 md:mt-2">
                               {student.badges?.map((badge, idx) => (
-                                <div key={idx}>{renderBadge(badge)}</div>
+                                <div key={idx} className="scale-75 md:scale-100">
+                                  {renderBadge(badge)}
+                                </div>
                               ))}
                             </div>
                           </div>
 
                           <div className="relative">
                             <div
-                              className="flex flex-col items-center rounded-2xl px-6 py-3 shadow-inner bg-white border-4"
+                              className="flex flex-col items-center rounded-xl md:rounded-2xl px-3 py-2 md:px-6 md:py-3 shadow-inner bg-white border-2 md:border-4"
                               style={{
                                 borderColor: themeColors.primary,
                               }}
                             >
-                              <div className="text-3xl font-bold leading-none text-[#023232]">
+                              <div className="text-xl md:text-3xl font-bold leading-none text-[#023232]">
                                 {student.points || 0}
                               </div>
-                              <div className="text-xs font-bold mt-1 tracking-wide text-gray-600">نقطة</div>
+                              <div className="text-[10px] md:text-xs font-bold mt-0.5 md:mt-1 tracking-wide text-gray-600">
+                                نقطة
+                              </div>
                             </div>
                           </div>
                         </div>
