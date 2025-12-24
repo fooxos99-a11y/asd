@@ -432,7 +432,7 @@ export default function AdminPathwaysPage() {
                     </TooltipTrigger>
                     <TooltipContent>{levels.find(l => l.level_number === selectedLevel)?.is_locked ? "فتح المستوى" : "قفل المستوى"}</TooltipContent>
                   </Tooltip>
-                  // ...existing code...
+                  
                 </TooltipProvider>
               </div>
             </CardHeader>
