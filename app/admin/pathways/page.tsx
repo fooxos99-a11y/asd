@@ -386,7 +386,6 @@ export default function AdminPathwaysPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="mb-4 md:mb-8">
             <h1 className="text-2xl md:text-4xl font-bold text-[#1a2332] mb-1 md:mb-2">إدارة المسار</h1>
-            {/* تم حذف نص الشرح */}
           </div>
 
           {/* تم حذف كرت إدارة المستويات بالكامل */}
