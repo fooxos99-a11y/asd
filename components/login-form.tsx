@@ -52,6 +52,7 @@ export function LoginForm() {
           role: data.user.role,
           name: data.user.name,
           halaqah: data.user.halaqah || "",
+          id: data.user.id // أضف uuid للطالب
         }
         localStorage.setItem("currentUser", JSON.stringify(currentUser))
 
@@ -62,6 +63,11 @@ export function LoginForm() {
         localStorage.setItem("studentName", data.user.name)
         localStorage.setItem("userHalaqah", data.user.halaqah || "")
         localStorage.setItem("isLoggedIn", "true")
+
+        // إذا كان الطالب، احفظ studentId (uuid) في localStorage
+        if (data.user.role === "student" && data.user.id) {
+          localStorage.setItem("studentId", data.user.id);
+        }
 
         setIsSuccess(true)
         setTimeout(() => {
