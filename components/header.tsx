@@ -221,7 +221,7 @@ export function Header() {
             className="md:hidden p-2 hover:bg-[#00312e]/80 rounded-lg transition-colors"
             aria-label="القائمة"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
           </button>
 
           {/* Center - Logo (mobile), Right - Logo (desktop) */}
