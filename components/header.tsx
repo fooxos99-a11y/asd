@@ -247,15 +247,15 @@ export function Header() {
             <Image
               src="/images/new-logo.png"
               alt="شعار الحبيب الجديد"
-              width={80}
-              height={80}
-              className="object-contain w-20 h-20"
+              width={112}
+              height={112}
+              className="object-contain w-28 h-28"
               style={{
                 filter:
                   "brightness(0) saturate(100%) invert(23%) sepia(97%) saturate(749%) hue-rotate(120deg) brightness(95%) contrast(90%)",
               }}
               loading="eager"
-              sizes="80px"
+              sizes="112px"
             />
           </div>
 
