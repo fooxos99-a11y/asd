@@ -286,6 +286,8 @@ export default function LevelPage() {
                         } catch (e) {}
                         setIsSubmitting(false);
                         setQuizDone(true);
+                        // ضع علامة في localStorage ليعرف المسار أنه يجب إعادة التحميل
+                        localStorage.setItem("levelCompleted", "true");
                         setTimeout(() => {
                           router.push("/pathways");
                         }, 2000);
