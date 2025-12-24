@@ -433,22 +433,7 @@ export default function AdminPathwaysPage() {
                     </TooltipTrigger>
                     <TooltipContent>{levels.find(l => l.level_number === selectedLevel)?.is_locked ? "فتح المستوى" : "قفل المستوى"}</TooltipContent>
                   </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button onClick={handleApplyHalfPoints} className="bg-orange-600 hover:bg-orange-700 text-white p-2 h-8 w-8 flex items-center justify-center">
-                        <Clock className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>تطبيق خصم نصف النقاط</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button onClick={handleRemoveHalfPoints} className="bg-red-600 hover:bg-red-700 text-white p-2 h-8 w-8 flex items-center justify-center">
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>إزالة خصم نصف النقاط</TooltipContent>
-                  </Tooltip>
+                  // ...existing code...
                 </TooltipProvider>
               </div>
             </CardHeader>
