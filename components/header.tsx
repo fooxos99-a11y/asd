@@ -214,30 +214,48 @@ export function Header() {
       )}
 
       <header className="bg-[#00312e] text-white py-7 sm:py-1.5 px-3 sm:px-4 md:px-6 z-50">
+
         <div className="container mx-auto flex items-center justify-between">
+          {/* Desktop logo - right side */}
+          <div className="hidden md:flex items-center mr-2">
+            <Image
+              src="/images/new-logo.png"
+              alt="شعار الحبيب الجديد"
+              width={140}
+              height={140}
+              className="object-contain w-28 h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36"
+              style={{
+                filter:
+                  "brightness(0) saturate(100%) invert(23%) sepia(97%) saturate(749%) hue-rotate(120deg) brightness(95%) contrast(90%)",
+              }}
+              loading="eager"
+              sizes="(max-width: 1024px) 112px, (max-width: 1280px) 128px, 144px"
+            />
+          </div>
+
           {/* Left side - Hamburger menu (mobile only) */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 hover:bg-[#00312e]/80 rounded-lg transition-colors"
             aria-label="القائمة"
           >
-            {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+            {isMobileMenuOpen ? <X className="w-10 h-10" /> : <Menu className="w-10 h-10" />}
           </button>
 
-          {/* Center - Logo (mobile), Right - Logo (desktop) */}
-          <div className="hidden md:flex items-center">
+          {/* Center - Logo (mobile only) */}
+          <div className="md:hidden flex items-center justify-center flex-1">
             <Image
-              src="/images/logo-habib.png.webp"
-              alt="شعار الحبيب"
-              width={140}
-              height={84}
-              className="object-contain w-28 h-auto lg:w-32 lg:h-auto xl:w-36 xl:h-auto"
+              src="/images/new-logo.png"
+              alt="شعار الحبيب الجديد"
+              width={80}
+              height={80}
+              className="object-contain w-20 h-20"
               style={{
                 filter:
-                  "brightness(0) saturate(100%) invert(72%) sepia(35%) saturate(548%) hue-rotate(358deg) brightness(92%) contrast(87%)",
+                  "brightness(0) saturate(100%) invert(23%) sepia(97%) saturate(749%) hue-rotate(120deg) brightness(95%) contrast(90%)",
               }}
               loading="eager"
-              sizes="(max-width: 1024px) 112px, (max-width: 1280px) 128px, 144px"
+              sizes="80px"
             />
           </div>
 
