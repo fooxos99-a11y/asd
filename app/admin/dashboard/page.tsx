@@ -964,16 +964,6 @@ export default function AdminDashboard() {
                     <FileText className="w-5 h-5 ml-2" />
                     سجلات الطلاب
                   </Button>
-                  <Button
-                    onClick={() => {
-                      setIsStudentManagementDialogOpen(false)
-                      router.push("/admin/student-daily-attendance")
-                    }}
-                    className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] hover:from-[#C9A961] hover:to-[#BFA050] text-[#023232] font-bold h-14 text-lg"
-                  >
-                    <Calendar className="w-5 h-5 ml-2" />
-                    السجل اليومي
-                  </Button>
                 </div>
                 <div className="flex justify-end">
                   <Button
@@ -1049,6 +1039,16 @@ export default function AdminDashboard() {
                   >
                     <MessageSquare className="w-5 h-5 ml-2" />
                     تقارير الرسائل
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setIsReportsDialogOpen(false)
+                      router.push("/admin/student-daily-attendance")
+                    }}
+                    className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] hover:from-[#C9A961] hover:to-[#BFA050] text-[#023232] font-bold h-14 text-lg"
+                  >
+                    <BookOpen className="w-5 h-5 ml-2" />
+                    السجل اليومي للطلاب
                   </Button>
                 </div>
                 <div className="flex justify-end">
