@@ -173,24 +173,39 @@ export default function StudentDailyAttendancePage() {
                         </TableRow>
                       ) : (
                         filteredRecords.length > 0 ? (
-                          filteredRecords.map((record) => (
-                            <TableRow key={record.id}>
-                              <TableCell className="font-semibold text-[#1a2332] text-lg">{record.student_name}</TableCell>
-                              <TableCell className="text-[#1a2332] text-lg">{record.account_number}</TableCell>
-                              <TableCell className="text-[#1a2332] text-lg">{formatDate(record.attendance_date)}</TableCell>
-                              <TableCell className="text-[#1a2332] text-lg">
-                                {record.status === "present" ? (
-                                  <span className="text-green-600 font-bold">✓ حاضر</span>
-                                ) : record.status === "excused" ? (
-                                  <span className="text-yellow-600 font-bold">مستأذن</span>
-                                ) : record.status === "absent" ? (
-                                  <span className="text-red-600 font-bold">✗ غائب</span>
-                                ) : (
-                                  <span className="text-gray-500 font-bold">لم يتم التسجيل</span>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))
+                          // ترتيب السجلات حسب الحالة المطلوبة
+                          [...filteredRecords]
+                            .sort((a, b) => {
+                              const statusOrder = {
+                                "absent": 0,
+                                "excused": 1,
+                                "present": 2,
+                                null: 3,
+                                undefined: 3,
+                                "": 3
+                              };
+                              const aOrder = statusOrder[a.status ?? ""];
+                              const bOrder = statusOrder[b.status ?? ""];
+                              return aOrder - bOrder;
+                            })
+                            .map((record) => (
+                              <TableRow key={record.id}>
+                                <TableCell className="font-semibold text-[#1a2332] text-lg">{record.student_name}</TableCell>
+                                <TableCell className="text-[#1a2332] text-lg">{record.account_number}</TableCell>
+                                <TableCell className="text-[#1a2332] text-lg">{formatDate(record.attendance_date)}</TableCell>
+                                <TableCell className="text-[#1a2332] text-lg">
+                                  {record.status === "present" ? (
+                                    <span className="text-green-600 font-bold">✓ حاضر</span>
+                                  ) : record.status === "excused" ? (
+                                    <span className="text-yellow-600 font-bold">مستأذن</span>
+                                  ) : record.status === "absent" ? (
+                                    <span className="text-red-600 font-bold">✗ غائب</span>
+                                  ) : (
+                                    <span className="text-gray-500 font-bold">لم يتم التسجيل</span>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))
                         ) : (
                           <TableRow>
                             <TableCell colSpan={4} className="text-center py-8">
