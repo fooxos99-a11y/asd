@@ -203,14 +203,8 @@ export default function ReportsPage() {
             </Card>
           </div>
 
-          {/* زر السجل اليومي + Filter Buttons */}
+          {/* Filter Buttons فقط */}
           <div className="flex flex-wrap gap-3 mb-6 items-center">
-            <Button
-              onClick={openDailyAttendance}
-              className="bg-[#1a2332] text-white hover:bg-[#d8a355] hover:text-[#1a2332] font-bold"
-            >
-              السجل اليومي للطلاب
-            </Button>
             <Button
               onClick={() => setFilter("all")}
               variant={filter === "all" ? "default" : "outline"}
