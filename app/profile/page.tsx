@@ -420,33 +420,33 @@ export default function ProfilePage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#1a2332]/70">رقم الحساب</label>
-                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-base md:text-lg font-bold text-[#1a2332]">
+                        <label className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">رقم الحساب</label>
+                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                           {studentData.account_number}
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#1a2332]/70">الاسم الكامل</label>
-                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-base md:text-lg font-bold text-[#1a2332]">
+                        <label className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">الاسم الكامل</label>
+                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                           {studentData.name}
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#1a2332]/70">الحلقة</label>
-                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-base md:text-lg font-bold text-[#1a2332]">
+                        <label className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">الحلقة</label>
+                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                           {studentData.halaqah}
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#1a2332]/70">رقم الهوية</label>
-                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-base md:text-lg font-bold text-[#1a2332]">
+                        <label className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">رقم الهوية</label>
+                        <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                           {studentData.id_number || "غير محدد"}
                         </div>
                       </div>
                       {studentData.guardian_phone && (
                         <div className="space-y-2">
-                          <label className="text-sm font-semibold text-[#1a2332]/70">رقم جوال ولي الأمر</label>
-                          <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-base md:text-lg font-bold text-[#1a2332]">
+                          <label className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">رقم جوال ولي الأمر</label>
+                          <div className="p-3 md:p-4 bg-gray-50 rounded-xl text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                             {studentData.guardian_phone}
                           </div>
                         </div>
@@ -492,23 +492,23 @@ export default function ProfilePage() {
                       attendanceRecords.map((record) => (
                         <div
                           key={record.id}
-                          className="p-4 bg-gray-50 rounded-xl border-2"
+                          className="p-4 bg-gray-50 rounded-xl border-2 mb-2 md:mb-0"
                           style={{ borderColor: `var(--theme-primary)1A` }}
                         >
-                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            <div>
-                              <p className="text-sm font-semibold text-[#1a2332]/70">التاريخ</p>
-                              <p className="text-lg font-bold text-[#1a2332]">
+                          <div className="flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4">
+                            <div className="mb-2 md:mb-0">
+                              <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">التاريخ</p>
+                              <p className="text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
                                 {new Date(record.date).toLocaleDateString("ar-SA")}
                               </p>
                             </div>
-                            <div>
-                              <p className="text-sm font-semibold text-[#1a2332]/70">الحضور</p>
+                            <div className="mb-2 md:mb-0">
+                              <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">الحضور</p>
                               <Badge
                                 className={
                                   record.status === "present"
-                                    ? "bg-green-100 text-green-800 text-base"
-                                    : "bg-red-100 text-red-800 text-base"
+                                    ? "bg-green-100 text-green-800 text-lg md:text-base font-bold px-3 py-1"
+                                    : "bg-red-100 text-red-800 text-lg md:text-base font-bold px-3 py-1"
                                 }
                               >
                                 {record.status === "present"
@@ -518,28 +518,28 @@ export default function ProfilePage() {
                                   : "غائب"}
                               </Badge>
                             </div>
-                            <div className="flex flex-row justify-between items-center w-full text-center gap-6">
-                              <div className="flex-1 mx-6">
-                                <p className="text-sm font-semibold text-[#1a2332]/70 mb-1">الحفظ</p>
-                                <p className="text-base font-bold" style={{ color: "var(--theme-primary)" }}>
+                            <div className="flex flex-col md:flex-row justify-between items-stretch w-full text-center gap-2 md:gap-6">
+                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
+                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">الحفظ</p>
+                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-primary)" }}>
                                   {getEvaluationText(record.hafiz_level)}
                                 </p>
                               </div>
-                              <div className="flex-1 mx-6">
-                                <p className="text-sm font-semibold text-[#1a2332]/70 mb-1">التكرار</p>
-                                <p className="text-base font-bold" style={{ color: "var(--theme-secondary)" }}>
+                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
+                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">التكرار</p>
+                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-secondary)" }}>
                                   {getEvaluationText(record.tikrar_level)}
                                 </p>
                               </div>
-                              <div className="flex-1 mx-6">
-                                <p className="text-sm font-semibold text-[#1a2332]/70 mb-1">السماع</p>
-                                <p className="text-base font-bold" style={{ color: "var(--theme-primary)" }}>
+                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
+                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">السماع</p>
+                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-primary)" }}>
                                   {getEvaluationText(record.samaa_level)}
                                 </p>
                               </div>
-                              <div className="flex-1 mx-6">
-                                <p className="text-sm font-semibold text-[#1a2332]/70 mb-1">الربط</p>
-                                <p className="text-base font-bold" style={{ color: "var(--theme-secondary)" }}>
+                              <div className="flex-1 mx-0 md:mx-6">
+                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">الربط</p>
+                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-secondary)" }}>
                                   {getEvaluationText(record.rabet_level)}
                                 </p>
                               </div>
