@@ -43,14 +43,6 @@ export default function PathwaysPage() {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true"
     const role = localStorage.getItem("userRole")
     setUserRole(role)
-
-    // إذا وجدنا levelCompleted في localStorage، أعد تحميل البيانات ثم احذفه
-    if (localStorage.getItem("levelCompleted") === "true") {
-      localStorage.removeItem("levelCompleted");
-      window.location.reload();
-      return;
-    }
-
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
