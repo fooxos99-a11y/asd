@@ -460,55 +460,55 @@ export default function ProfilePage() {
                 <Card className="border-2 shadow-lg" style={{ borderColor: `var(--theme-primary)33` }}>
                   <CardContent className="pt-6">
                     <div className="text-center py-12">
-                      <Award className="w-24 h-24 mx-auto mb-4 opacity-30" style={{ color: "var(--theme-primary)" }} />
-                      <p className="text-xl text-[#1a2332]/60 mb-2">لاتوجد إنجازات حاليا</p>
+                      <Award className="w-24 h-24 mx-auto mb-4 opacity-40" style={{ color: "#d8a355" }} />
+                      <p className="text-2xl font-bold text-[#c99347] mb-2">لاتوجد إنجازات حاليا</p>
                     </div>
                   </CardContent>
                 </Card>
               </TabsContent>
 
               <TabsContent value="records" className="space-y-4">
-                {/* تم حذف زر تحديث السجلات بناءً على طلب المستخدم */}
                 <Card className="border-2 shadow-lg" style={{ borderColor: `var(--theme-primary)33` }}>
                   <CardHeader className="bg-white">
-                    <CardTitle className="text-2xl text-[#1a2332]">سجلات الحضور والتقييم</CardTitle>
-                    <CardDescription className="text-base">سجلات الحضور والتقييمات الخاصة بك</CardDescription>
+                    <CardTitle className="text-2xl font-bold text-[#c99347]">سجلات الحضور والتقييم</CardTitle>
+                    <CardDescription className="text-lg font-semibold text-[#1a2332]/80">سجلات الحضور والتقييمات الخاصة بك</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6 space-y-4">
                     {isLoadingRecords ? (
                       <div className="text-center py-8">
-                        <p className="text-lg text-[#1a2332]/60">جاري تحميل السجلات...</p>
+                        <p className="text-xl font-bold text-[#c99347]/80">جاري تحميل السجلات...</p>
                       </div>
                     ) : attendanceRecords.length === 0 ? (
                       <div className="text-center py-12">
                         <Calendar
-                          className="w-24 h-24 mx-auto mb-4 opacity-30"
-                          style={{ color: "var(--theme-primary)" }}
+                          className="w-24 h-24 mx-auto mb-4 opacity-40"
+                          style={{ color: "#d8a355" }}
                         />
-                        <p className="text-xl text-[#1a2332]/60 mb-2">لا توجد سجلات حضور حالياً</p>
-                        <p className="text-base text-[#1a2332]/40">سيتم تسجيل حضورك وتقييماتك من قبل المعلم</p>
+                        <p className="text-2xl font-bold text-[#c99347] mb-2">لا توجد سجلات حضور حالياً</p>
+                        <p className="text-lg text-[#1a2332]/50">سيتم تسجيل حضورك وتقييماتك من قبل المعلم</p>
                       </div>
                     ) : (
-                      attendanceRecords.map((record) => (
-                        <div
-                          key={record.id}
-                          className="p-4 bg-gray-50 rounded-xl border-2 mb-2 md:mb-0"
-                          style={{ borderColor: `var(--theme-primary)1A` }}
-                        >
-                          <div className="flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4">
-                            <div className="mb-2 md:mb-0">
-                              <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">التاريخ</p>
-                              <p className="text-lg md:text-lg font-extrabold text-[#1a2332] tracking-wide">
-                                {new Date(record.date).toLocaleDateString("ar-SA")}
-                              </p>
-                            </div>
-                            <div className="mb-2 md:mb-0">
-                              <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80">الحضور</p>
+                      <div className="flex flex-col gap-4">
+                        {attendanceRecords.map((record) => (
+                          <div
+                            key={record.id}
+                            className="p-4 bg-white rounded-2xl border-2 shadow-md flex flex-col gap-3"
+                            style={{ borderColor: `#d8a35533` }}
+                          >
+                            <div className="flex flex-row justify-between items-center mb-2">
+                              <div>
+                                <span className="text-base font-bold text-[#c99347]">التاريخ: </span>
+                                <span className="text-lg font-extrabold text-[#1a2332] tracking-wide">
+                                  {new Date(record.date).toLocaleDateString("ar-SA")}
+                                </span>
+                              </div>
                               <Badge
                                 className={
                                   record.status === "present"
-                                    ? "bg-green-100 text-green-800 text-lg md:text-base font-bold px-3 py-1"
-                                    : "bg-red-100 text-red-800 text-lg md:text-base font-bold px-3 py-1"
+                                    ? "bg-green-100 text-green-800 text-base font-bold px-3 py-1"
+                                    : record.status === "excused"
+                                    ? "bg-yellow-100 text-yellow-800 text-base font-bold px-3 py-1"
+                                    : "bg-red-100 text-red-800 text-base font-bold px-3 py-1"
                                 }
                               >
                                 {record.status === "present"
@@ -518,35 +518,35 @@ export default function ProfilePage() {
                                   : "غائب"}
                               </Badge>
                             </div>
-                            <div className="flex flex-col md:flex-row justify-between items-stretch w-full text-center gap-2 md:gap-6">
-                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
-                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">الحفظ</p>
-                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-primary)" }}>
+                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 text-center">
+                              <div className="flex flex-col">
+                                <span className="text-base font-bold text-[#c99347] mb-1">الحفظ</span>
+                                <span className="text-lg font-extrabold text-[#1a2332]">
                                   {getEvaluationText(record.hafiz_level)}
-                                </p>
+                                </span>
                               </div>
-                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
-                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">التكرار</p>
-                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-secondary)" }}>
+                              <div className="flex flex-col">
+                                <span className="text-base font-bold text-[#c99347] mb-1">التكرار</span>
+                                <span className="text-lg font-extrabold text-[#1a2332]">
                                   {getEvaluationText(record.tikrar_level)}
-                                </p>
+                                </span>
                               </div>
-                              <div className="flex-1 mx-0 md:mx-6 mb-2 md:mb-0">
-                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">السماع</p>
-                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-primary)" }}>
+                              <div className="flex flex-col">
+                                <span className="text-base font-bold text-[#c99347] mb-1">السماع</span>
+                                <span className="text-lg font-extrabold text-[#1a2332]">
                                   {getEvaluationText(record.samaa_level)}
-                                </p>
+                                </span>
                               </div>
-                              <div className="flex-1 mx-0 md:mx-6">
-                                <p className="text-base md:text-sm font-bold md:font-semibold text-[#1a2332]/80 mb-1">الربط</p>
-                                <p className="text-lg md:text-base font-extrabold" style={{ color: "var(--theme-secondary)" }}>
+                              <div className="flex flex-col">
+                                <span className="text-base font-bold text-[#c99347] mb-1">الربط</span>
+                                <span className="text-lg font-extrabold text-[#1a2332]">
                                   {getEvaluationText(record.rabet_level)}
-                                </p>
+                                </span>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))
+                        ))}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
