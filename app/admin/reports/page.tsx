@@ -26,6 +26,10 @@ const subjectLabels: Record<string, string> = {
 }
 
 export default function ReportsPage() {
+    // دالة لفتح السجل اليومي في نافذة جديدة
+    const openDailyAttendance = () => {
+      window.open("/admin/student-daily-attendance", "_blank")
+    }
   const [messages, setMessages] = useState<ContactMessage[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<"all" | "unread" | "read" | "archived">("all")
@@ -199,8 +203,14 @@ export default function ReportsPage() {
             </Card>
           </div>
 
-          {/* Filter Buttons */}
-          <div className="flex gap-3 mb-6">
+          {/* زر السجل اليومي + Filter Buttons */}
+          <div className="flex flex-wrap gap-3 mb-6 items-center">
+            <Button
+              onClick={openDailyAttendance}
+              className="bg-[#1a2332] text-white hover:bg-[#d8a355] hover:text-[#1a2332] font-bold"
+            >
+              السجل اليومي للطلاب
+            </Button>
             <Button
               onClick={() => setFilter("all")}
               variant={filter === "all" ? "default" : "outline"}
