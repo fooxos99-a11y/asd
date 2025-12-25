@@ -438,6 +438,8 @@ export default function AdminPathwaysPage() {
             </CardHeader>
             <CardContent className="p-3 md:p-6">
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 md:gap-3">
+                  {/* في الجوال: عمودي، في الشاشات الأكبر: أفقي */}
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-3">
                 {levels.map((level) => {
                   return (
                     <Button
@@ -457,10 +459,11 @@ export default function AdminPathwaysPage() {
                     >
                       <span onClick={e => {e.stopPropagation(); setLevelEdit({id:level.id, title:level.title, description:level.description||'', points:level.points ?? 100})}} className="cursor-pointer text-[#00312e] no-underline hover:no-underline">{level.title}</span>
                       <span className="absolute top-0.5 left-0.5 md:top-1 md:left-1">
+                        {/* تحسين محاذاة الأيقونة في الجوال */}
                         {level.is_locked ? (
-                          <Lock className="w-2 md:w-3 h-2 md:h-3 text-red-600" />
+                          <Lock className="w-4 h-4 md:w-3 md:h-3 text-red-600" />
                         ) : (
-                          <Unlock className="w-2 md:w-3 h-2 md:h-3 text-green-600" />
+                          <Unlock className="w-4 h-4 md:w-3 md:h-3 text-green-600" />
                         )}
                       </span>
                     </Button>
